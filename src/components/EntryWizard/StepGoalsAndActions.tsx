@@ -1,6 +1,9 @@
 import type { GoalAction } from '../../types';
 import { VoiceInputButton } from '../shared/VoiceInputButton';
 
+const MIN_GOALS = 1;
+const MAX_GOALS = 10;
+
 interface StepGoalsAndActionsProps {
   goals: GoalAction[];
   onChange: (goals: GoalAction[]) => void;
@@ -12,12 +15,22 @@ export function StepGoalsAndActions({ goals, onChange }: StepGoalsAndActionsProp
     onChange(next);
   }
 
+  function addGoalSlot() {
+    if (goals.length < MAX_GOALS) onChange([...goals, { goal: '', action: '' }]);
+  }
+
+  function removeGoalSlot(index: number) {
+    if (goals.length <= MIN_GOALS) return;
+    onChange(goals.filter((_, i) => i !== index));
+  }
+
   return (
     <div>
       <h2 className="text-xl font-semibold text-ink mb-1">Дневник самопрограммирования</h2>
       <p className="text-sm text-ink-soft mb-4">
-        Опиши 5 своих желаний в настоящем времени, будто они уже сбылись (горизонт 1–3 года). Под
-        каждым — конкретное действие, которое приблизит тебя к этому уже сегодня.
+        Опиши свои желания в настоящем времени, будто они уже сбылись (горизонт 1–3 года). Обычно
+        достаточно 5, но можно добавить больше. Под каждым — конкретное действие, которое
+        приблизит тебя к этому уже сегодня.
       </p>
 
       <div className="flex flex-col gap-4">
@@ -28,6 +41,16 @@ export function StepGoalsAndActions({ goals, onChange }: StepGoalsAndActionsProp
                 {index + 1}
               </span>
               <label className="text-sm font-medium text-ink">Моя реальность</label>
+              {goals.length > MIN_GOALS && (
+                <button
+                  type="button"
+                  onClick={() => removeGoalSlot(index)}
+                  aria-label="Удалить цель"
+                  className="ml-auto shrink-0 grid place-items-center size-7 rounded-full text-ink-soft/50 hover:bg-coral-light hover:text-coral transition-colors"
+                >
+                  ✕
+                </button>
+              )}
             </div>
             <div className="flex gap-2 items-start mb-3">
               <textarea
@@ -65,6 +88,16 @@ export function StepGoalsAndActions({ goals, onChange }: StepGoalsAndActionsProp
           </div>
         ))}
       </div>
+
+      {goals.length < MAX_GOALS && (
+        <button
+          type="button"
+          onClick={addGoalSlot}
+          className="mt-3 text-sm font-medium text-lavender hover:underline"
+        >
+          + Добавить ещё цель
+        </button>
+      )}
     </div>
   );
 }

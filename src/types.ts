@@ -5,6 +5,13 @@ export interface GoalAction {
   action: string;
 }
 
+export interface Goal {
+  id: string;
+  text: string;
+  createdAt: string; // ISO timestamp
+  achievedAt: string | null; // ISO timestamp, null while active
+}
+
 export interface Entry {
   id: string;
   date: string; // YYYY-MM-DD

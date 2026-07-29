@@ -5,8 +5,9 @@ import { Dashboard } from './components/Dashboard/Dashboard';
 import { EntryWizard } from './components/EntryWizard/EntryWizard';
 import { History } from './components/History/History';
 import { EntryDetail } from './components/History/EntryDetail';
+import { Goals } from './components/Goals/Goals';
 
-type Screen = 'dashboard' | 'wizard' | 'history' | 'detail';
+type Screen = 'dashboard' | 'wizard' | 'history' | 'detail' | 'goals';
 
 function App() {
   const [entries, setEntries] = useState<Entry[]>(() => getAllEntries());
@@ -59,15 +60,31 @@ function App() {
   return (
     <div className="min-h-svh bg-cream">
       <header className="border-b border-black/5 bg-card/60 backdrop-blur">
-        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center gap-2">
-          <span className="text-xl">📔</span>
+        <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between gap-2 flex-wrap">
           <button
             type="button"
             onClick={goToDashboard}
-            className="font-semibold text-ink hover:opacity-80 transition-opacity"
+            className="flex items-center gap-2 font-semibold text-ink hover:opacity-80 transition-opacity"
           >
+            <span className="text-xl">📔</span>
             Дневник самопрограммирования
           </button>
+          <nav className="flex gap-4">
+            <button
+              type="button"
+              onClick={() => setScreen('goals')}
+              className="text-sm font-medium text-ink-soft hover:text-ink transition-colors"
+            >
+              Мои цели
+            </button>
+            <button
+              type="button"
+              onClick={() => setScreen('history')}
+              className="text-sm font-medium text-ink-soft hover:text-ink transition-colors"
+            >
+              История
+            </button>
+          </nav>
         </div>
       </header>
 
@@ -78,6 +95,7 @@ function App() {
             onStartEntry={startEntry}
             onOpenEntry={openEntry}
             onOpenHistory={() => setScreen('history')}
+            onOpenGoals={() => setScreen('goals')}
           />
         )}
 
@@ -93,6 +111,8 @@ function App() {
         {screen === 'history' && (
           <History entries={entries} onOpenEntry={openEntry} onBack={goToDashboard} />
         )}
+
+        {screen === 'goals' && <Goals onBack={goToDashboard} />}
 
         {screen === 'detail' && detailEntry && (
           <EntryDetail
