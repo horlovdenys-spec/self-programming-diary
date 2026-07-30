@@ -1,19 +1,18 @@
 import type { Entry, Mood } from '../../types';
 import { USER_NAME } from '../../constants';
 import { todayStr } from '../../storage/entriesStore';
-import { getAllGoals } from '../../storage/goalsStore';
 import { Card } from '../shared/Card';
 import { MoodPicker } from '../shared/MoodPicker';
 import { StreakTracker } from './StreakTracker';
 import { MoodHeatmap } from './MoodHeatmap';
 import { RecentEntries } from './RecentEntries';
+import { IdealDayCard } from './IdealDayCard';
 
 interface DashboardProps {
   entries: Entry[];
   onStartEntry: (presetMood?: Mood) => void;
   onOpenEntry: (id: string) => void;
   onOpenHistory: () => void;
-  onOpenGoals: () => void;
 }
 
 function getGreeting(): string {
@@ -24,13 +23,7 @@ function getGreeting(): string {
   return 'Добрый вечер';
 }
 
-export function Dashboard({
-  entries,
-  onStartEntry,
-  onOpenEntry,
-  onOpenHistory,
-  onOpenGoals,
-}: DashboardProps) {
+export function Dashboard({ entries, onStartEntry, onOpenEntry, onOpenHistory }: DashboardProps) {
   const today = todayStr();
   const todayEntry = entries.find((e) => e.date === today);
   const dateLabel = new Date().toLocaleDateString('ru-RU', {
@@ -38,9 +31,6 @@ export function Dashboard({
     day: 'numeric',
     month: 'long',
   });
-  const goals = getAllGoals();
-  const activeGoalsCount = goals.filter((g) => !g.achievedAt).length;
-  const achievedGoalsCount = goals.filter((g) => g.achievedAt).length;
 
   return (
     <div className="flex flex-col gap-5">
@@ -50,6 +40,8 @@ export function Dashboard({
         </h1>
         <p className="text-ink-soft mt-1 capitalize">{dateLabel}</p>
       </div>
+
+      <IdealDayCard />
 
       <Card className="bg-lavender-light border-none">
         {todayEntry ? (
@@ -85,20 +77,6 @@ export function Dashboard({
         <StreakTracker entries={entries} />
         <MoodHeatmap entries={entries} />
       </div>
-
-      <button type="button" onClick={onOpenGoals} className="text-left">
-        <Card className="hover:bg-cream transition-colors">
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div>
-              <h3 className="font-semibold text-ink">Мои цели</h3>
-              <p className="text-sm text-ink-soft mt-1">
-                {activeGoalsCount} активных · {achievedGoalsCount} сбылось 🎉
-              </p>
-            </div>
-            <span className="text-lavender font-medium">Открыть →</span>
-          </div>
-        </Card>
-      </button>
 
       <RecentEntries entries={entries} onOpenEntry={onOpenEntry} onOpenHistory={onOpenHistory} />
     </div>

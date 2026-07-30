@@ -5,9 +5,8 @@ import { Dashboard } from './components/Dashboard/Dashboard';
 import { EntryWizard } from './components/EntryWizard/EntryWizard';
 import { History } from './components/History/History';
 import { EntryDetail } from './components/History/EntryDetail';
-import { Goals } from './components/Goals/Goals';
 
-type Screen = 'dashboard' | 'wizard' | 'history' | 'detail' | 'goals';
+type Screen = 'dashboard' | 'wizard' | 'history' | 'detail';
 
 function App() {
   const [entries, setEntries] = useState<Entry[]>(() => getAllEntries());
@@ -72,13 +71,6 @@ function App() {
           <nav className="flex gap-4">
             <button
               type="button"
-              onClick={() => setScreen('goals')}
-              className="text-sm font-medium text-ink-soft hover:text-ink transition-colors"
-            >
-              Мои цели
-            </button>
-            <button
-              type="button"
               onClick={() => setScreen('history')}
               className="text-sm font-medium text-ink-soft hover:text-ink transition-colors"
             >
@@ -95,7 +87,6 @@ function App() {
             onStartEntry={startEntry}
             onOpenEntry={openEntry}
             onOpenHistory={() => setScreen('history')}
-            onOpenGoals={() => setScreen('goals')}
           />
         )}
 
@@ -111,8 +102,6 @@ function App() {
         {screen === 'history' && (
           <History entries={entries} onOpenEntry={openEntry} onBack={goToDashboard} />
         )}
-
-        {screen === 'goals' && <Goals onBack={goToDashboard} />}
 
         {screen === 'detail' && detailEntry && (
           <EntryDetail
